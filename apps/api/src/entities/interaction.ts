@@ -10,7 +10,7 @@ import type {
   ReminderKind,
 } from '@zupu/shared';
 
-// M4 小程序与互动。表结构见 migrations/1731994000000-Interaction.ts
+// M4 小程序与互动。表结构见 migrations/1732630000000-Interaction.ts
 
 @Entity('contact_card')
 export class ContactCardEntity {

@@ -1,8 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 /** M4 小程序与互动：族人通讯录、活动与公告、生日/忌日提醒、站内通知、微信订阅消息额度 */
-export class Interaction1731994000000 implements MigrationInterface {
-  name = 'Interaction1731994000000';
+export class Interaction1732630000000 implements MigrationInterface {
+  name = 'Interaction1732630000000';
 
   async up(q: QueryRunner): Promise<void> {
     await q.query(`
