@@ -201,7 +201,8 @@ import {
   type RelationType,
   type MarriageType,
 } from '@zupu/shared';
-import { api, errorMessage, run, uploadMedia } from '../api';
+import { api, errorMessage, run } from '../api';
+import { uploadGallery } from '../heritage/api';
 import PersonPicker from '../components/PersonPicker.vue';
 import RichEditor from '../components/RichEditor.vue';
 
@@ -390,7 +391,7 @@ async function removeMarriage(id: string) {
 async function upload(opt: UploadRequestOptions) {
   uploading.value = true;
   try {
-    await uploadMedia(detail.value!.id, opt.file);
+    await uploadGallery(detail.value!.id, opt.file);
     ElMessage.success('上传成功');
     await loadDetail();
   } catch (e) {

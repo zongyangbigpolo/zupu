@@ -2,7 +2,7 @@
 
 一个支持多个家族共用的在线族谱系统：网页登录查看（小程序端在后续版本提供）。当前为 **M1 基础版**。
 
-> 设计方案见 [docs/design.md](docs/design.md)；M1 实现说明与后续扩展约定见 [docs/m1-implementation.md](docs/m1-implementation.md)。
+> 设计方案见 [docs/design.md](docs/design.md)；M1 实现说明与后续扩展约定见 [docs/m1-implementation.md](docs/m1-implementation.md)；M2（内容与传承）见 [docs/m2-implementation.md](docs/m2-implementation.md)。
 
 ## M1 功能
 

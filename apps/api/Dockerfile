@@ -14,6 +14,8 @@ RUN npm run build -w @zupu/shared && npm run build -w @zupu/api && npm prune --o
 FROM node:22-alpine
 WORKDIR /app
 ENV NODE_ENV=production TZ=Asia/Shanghai
+# pg_dump 用于每日数据库备份（与 postgres:16 版本一致）
+RUN apk add --no-cache postgresql16-client
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/packages/shared/package.json ./packages/shared/package.json
 COPY --from=build /app/packages/shared/dist ./packages/shared/dist

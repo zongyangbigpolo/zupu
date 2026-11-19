@@ -75,15 +75,12 @@
         <el-card shadow="never"><AuditTable :data="logs" @page="loadLogs" /></el-card>
       </el-tab-pane>
 
-      <el-tab-pane label="纸质谱导入" name="import">
-        <el-card shadow="never">
-          <el-result icon="info" title="敬请期待" sub-title="后续版本将支持：Excel 标准模板导入；纸质谱拍照 → AI 识别（OCR）→ 生成导入草稿 → 管理员核对后入谱。">
-            <template #extra>
-              <el-button disabled :icon="'Camera'">拍照识别导入（AI）</el-button>
-              <el-button disabled :icon="'Document'">Excel 模板导入</el-button>
-            </template>
-          </el-result>
-        </el-card>
+      <el-tab-pane label="Excel 导入" name="import">
+        <el-card shadow="never"><ImportPanel :clan-id="clanId" @imported="loadLogs()" /></el-card>
+      </el-tab-pane>
+
+      <el-tab-pane label="数据导出" name="export">
+        <el-card shadow="never"><ExportPanel :clan-id="clanId" :clan-name="clan.name" /></el-card>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -97,6 +94,8 @@ import { ElMessageBox } from 'element-plus';
 import { api, run } from '../api';
 import AuditTable from '../components/AuditTable.vue';
 import PersonPicker from '../components/PersonPicker.vue';
+import ExportPanel from '../heritage/components/ExportPanel.vue';
+import ImportPanel from '../heritage/components/ImportPanel.vue';
 
 const route = useRoute();
 const router = useRouter();

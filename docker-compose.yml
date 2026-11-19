@@ -40,6 +40,11 @@ services:
       S3_SECRET_KEY: ${S3_SECRET_KEY:-zupu_minio_pw}
       S3_FORCE_PATH_STYLE: ${S3_FORCE_PATH_STYLE:-true}
       S3_AUTO_CREATE_BUCKET: ${S3_AUTO_CREATE_BUCKET:-true}
+      BACKUP_ENABLED: ${BACKUP_ENABLED:-true}
+      BACKUP_DAILY_AT: ${BACKUP_DAILY_AT:-03:00}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
+      BACKUP_METHOD: ${BACKUP_METHOD:-auto}
+      FFMPEG_PATH: ${FFMPEG_PATH:-}
     volumes:
       - uploads:/data/uploads
 

@@ -196,7 +196,7 @@ describe('M2 内容与传承（e2e）', () => {
       expect(d.avgLifespan).toBeGreaterThan(20);
       expect(d.lifespanBuckets).toHaveLength(10);
       expect(d.regions.length).toBeGreaterThan(0);
-      expect(d.regions[0].name).not.toMatch(/白石铺/);
+      expect(d.regions.map((r: any) => r.name)).toEqual(expect.arrayContaining(['湘潭县', '长沙府']));
       expect(d.oralHistoryCount).toBeGreaterThan(0);
       await request(http).get(`/api/clans/${ids.wangClanId}/dashboard`).set(auth('liAdmin')).expect(403);
     });

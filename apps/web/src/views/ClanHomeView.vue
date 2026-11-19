@@ -42,6 +42,7 @@
             <el-input-number v-model="generation" :min="1" placeholder="世代" controls-position="right" style="width: 120px" />
             <el-input v-model="generationChar" placeholder="字辈" clearable style="width: 90px" />
             <el-button type="danger" :icon="'Search'" @click="search(1)">搜索</el-button>
+            <el-button link @click="router.push(`/clans/${clan.id}/search`)">高级搜索（地区、时间段…）</el-button>
           </div>
           <el-table :data="result.items" v-loading="searching" size="small" stripe @row-click="(r: any) => router.push(`/persons/${r.id}`)">
             <el-table-column label="姓名" width="150">
@@ -92,6 +93,8 @@
           <el-empty v-else :image-size="50" :description="auth.loggedIn ? '账号尚未与谱中人物绑定，请联系家族管理员' : '登录后可绑定谱中身份'" />
         </el-card>
 
+        <ClanHeritageNav :clan-id="clan.id" :founder-id="founderId" />
+
         <el-card shadow="never" class="mb" v-if="stats">
           <template #header><span class="card-title">概览</span></template>
           <el-row>
@@ -100,7 +103,7 @@
             <el-col :span="12" style="margin-top: 12px"><el-statistic title="男 / 女" :value="stats.maleCount" :suffix="`/ ${stats.femaleCount}`" /></el-col>
             <el-col :span="12" style="margin-top: 12px"><el-statistic title="在世" :value="stats.livingCount" /></el-col>
           </el-row>
-          <p class="muted" style="margin-top: 10px">详细统计看板将在后续版本提供。</p>
+          <router-link :to="`/clans/${clan.id}/stats`" class="muted" style="display: inline-block; margin-top: 10px">查看详细统计看板 →</router-link>
         </el-card>
       </el-col>
     </el-row>
@@ -123,6 +126,7 @@ import {
 } from '@zupu/shared';
 import { api, run } from '../api';
 import { useAuth } from '../stores/auth';
+import ClanHeritageNav from '../heritage/components/ClanHeritageNav.vue';
 
 const route = useRoute();
 const router = useRouter();

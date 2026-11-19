@@ -9,6 +9,7 @@
         <div class="row">
           <el-button type="danger" :icon="'Share'" @click="router.push(`/persons/${p.id}/tree`)">五代树</el-button>
           <el-button :icon="'Connection'" @click="router.push(`/clans/${p.clanId}/kinship?from=${me ?? ''}&to=${p.id}`)">亲属关系</el-button>
+          <el-button v-if="!p.isLiving" :icon="'Sunny'" @click="router.push(`/persons/${p.id}/memorial`)">纪念馆</el-button>
           <el-button v-if="isAdmin" type="warning" :icon="'Edit'" @click="router.push(`/persons/${p.id}/edit`)">编辑</el-button>
         </div>
       </template>
@@ -83,30 +84,20 @@
           </template>
           <div v-if="p.biography" class="rich" v-html="sanitizeHtml(p.biography)" />
           <p v-else class="muted">暂无生平记载</p>
-          <el-timeline v-if="p.events.length" style="margin-top: 16px">
-            <el-timeline-item v-for="e in p.events" :key="e.id" :timestamp="[e.eventText, e.place].filter(Boolean).join(' · ')" placement="top">
-              <el-tag size="small" v-if="e.type" style="margin-right: 6px">{{ e.type }}</el-tag>
-              <b>{{ e.title }}</b>
-              <div v-if="e.description" class="muted">{{ e.description }}</div>
-            </el-timeline-item>
-          </el-timeline>
+          <el-divider content-position="left">事迹</el-divider>
+          <EventsPanel :person-id="p.id" :events="p.events" :admin="isAdmin" @changed="load" />
+        </el-card>
+
+        <el-card shadow="never" class="mb">
+          <template #header><span class="card-title">照片与影音</span></template>
+          <MediaGallery v-if="!p.hiddenFields?.length" :person-id="p.id" :admin="isAdmin" @changed="load" />
+          <p v-else class="muted">照片与影音仅对本族族人可见</p>
         </el-card>
 
         <el-card shadow="never">
-          <template #header><span class="card-title">照片与影音</span></template>
-          <div v-if="photos.length" class="photos">
-            <div v-for="(m, i) in photos" :key="m.id" class="photo">
-              <el-image :src="m.url" fit="cover" :preview-src-list="photos.map((x) => x.url)" :initial-index="i" style="width: 150px; height: 150px; border-radius: 4px" />
-              <div class="muted cap">{{ m.caption }}</div>
-            </div>
-          </div>
-          <div v-for="m in avMedia" :key="m.id" style="margin-top: 10px">
-            <div class="muted">{{ m.caption }}</div>
-            <video v-if="m.type === 'video'" :src="m.url" controls style="max-width: 100%; max-height: 320px" />
-            <audio v-else-if="m.type === 'audio'" :src="m.url" controls />
-            <a v-else :href="m.url" target="_blank">下载文档</a>
-          </div>
-          <p v-if="!p.media.length" class="muted">暂无照片或影音资料</p>
+          <template #header><span class="card-title">口述历史</span></template>
+          <OralHistoryPanel v-if="!p.hiddenFields?.length" :person-id="p.id" :admin="isAdmin" />
+          <p v-else class="muted">口述历史仅对本族族人可见</p>
         </el-card>
       </el-col>
     </el-row>
@@ -129,6 +120,9 @@ import {
 } from '@zupu/shared';
 import { api, run } from '../api';
 import { sanitizeHtml } from '../sanitize';
+import EventsPanel from '../heritage/components/EventsPanel.vue';
+import MediaGallery from '../heritage/components/MediaGallery.vue';
+import OralHistoryPanel from '../heritage/components/OralHistoryPanel.vue';
 
 const RelChip = defineComponent({
   props: { r: { type: Object as () => RelativeRef, required: true }, tag: String },
@@ -149,7 +143,6 @@ const meRel = ref<KinshipResult | null>(null);
 const isAdmin = computed(() => clan.value?.myRole === 'admin' || clan.value?.myRole === 'super');
 const me = computed(() => clan.value?.myLinkedPersonId ?? null);
 const photos = computed(() => p.value?.media.filter((m) => m.type === 'photo') ?? []);
-const avMedia = computed(() => p.value?.media.filter((m) => m.type !== 'photo') ?? []);
 const avatar = computed(() => photos.value.find((m) => m.id === p.value?.avatarMediaId) ?? photos.value[0]);
 
 const parentTag = (r: RelativeRef) => {
@@ -162,8 +155,13 @@ const childTag = (r: RelativeRef) => {
 };
 const dateText = (t: string | null, d: string | null) => t || d || '—';
 
+async function load() {
+  const r = await run(api.persons.get(route.params.id as string));
+  if (r) p.value = r;
+}
+
 onMounted(async () => {
-  p.value = (await run(api.persons.get(route.params.id as string))) ?? null;
+  await load();
   if (!p.value) return;
   clan.value = (await run(api.clans.get(p.value.clanId))) ?? null;
   if (me.value && me.value !== p.value.id) meRel.value = (await run(api.clans.kinship(p.value.clanId, me.value, p.value.id))) ?? null;
@@ -179,6 +177,4 @@ onMounted(async () => {
 .rel-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 10px; }
 .rel-label { width: 40px; color: #888; }
 :deep(.chip) { padding: 4px 10px; border: 1px solid #eadfca; border-radius: 16px; background: #fffaf0; }
-.photos { display: flex; flex-wrap: wrap; gap: 12px; }
-.cap { width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 </style>

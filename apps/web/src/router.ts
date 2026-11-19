@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { heritageRoutes } from './heritage/routes';
 import { useAuth } from './stores/auth';
 
 export const router = createRouter({
@@ -18,6 +19,8 @@ export const router = createRouter({
     { path: '/clans/:clanId/links', component: () => import('./views/m5/ClanLinksView.vue'), meta: { title: '跨族连谱', login: true } },
     { path: '/clans/:clanId/gedcom', component: () => import('./views/m5/GedcomView.vue'), meta: { title: '数据导入导出', login: true } },
     { path: '/super/links', component: () => import('./views/m5/SuperLinksView.vue'), meta: { title: '连谱审批', login: true, super: true } },
+    // M2 内容与传承
+    ...heritageRoutes,
   ],
 });
 

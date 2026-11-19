@@ -58,6 +58,9 @@
         </div>
         <AuditTable :data="logs" show-clan @page="loadLogs" />
       </el-tab-pane>
+      <el-tab-pane label="数据备份" name="backups" lazy>
+        <BackupPanel />
+      </el-tab-pane>
     </el-tabs>
 
     <el-dialog v-model="createVisible" title="创建家族" width="560px">
@@ -113,6 +116,7 @@ import type { ClanCreateInput } from '@zupu/shared';
 import { ElMessageBox } from 'element-plus';
 import { api, run } from '../api';
 import AuditTable from '../components/AuditTable.vue';
+import BackupPanel from '../heritage/components/BackupPanel.vue';
 
 type Row = Clan & { admins: ClanAdminInfo[]; personCount: number };
 const tab = ref('clans');
