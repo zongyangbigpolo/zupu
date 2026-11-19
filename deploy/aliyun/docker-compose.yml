@@ -1,0 +1,85 @@
+# 阿里云小内存服务器（约 2 GB 内存）部署用 compose，见 docs/deploy-aliyun.md
+# 镜像由 GitHub Actions 构建（linux/amd64）推送到 ghcr.io，服务器只拉取不构建。
+# 服务器目录：/opt/zupu（本文件 + 仅 root 可读的 .env）
+name: zupu
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: zupu-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: zupu
+      POSTGRES_USER: zupu
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD 未设置}
+      TZ: Asia/Shanghai
+    # 低内存调优
+    command:
+      - postgres
+      - -c
+      - shared_buffers=32MB
+      - -c
+      - effective_cache_size=96MB
+      - -c
+      - work_mem=2MB
+      - -c
+      - maintenance_work_mem=16MB
+      - -c
+      - max_connections=20
+      - -c
+      - wal_buffers=1MB
+      - -c
+      - max_wal_size=256MB
+    shm_size: 64m
+    mem_limit: 256m
+    ports:
+      - "127.0.0.1:${DB_PORT:-5434}:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zupu -d zupu"]
+      interval: 5s
+      retries: 30
+
+  api:
+    image: ${ZUPU_REGISTRY:-ghcr.io/zongyangbigpolo/}zupu-api:${ZUPU_TAG:-latest}
+    container_name: zupu-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://zupu:${DB_PASSWORD}@db:5432/zupu
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET 未设置}
+      NODE_OPTIONS: --max-old-space-size=256
+      UPLOAD_DIR: /data/uploads
+      STORAGE_DRIVER: local
+      BACKUP_ENABLED: ${BACKUP_ENABLED:-true}
+      BACKUP_DAILY_AT: ${BACKUP_DAILY_AT:-03:00}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-7}
+      # 未配置地图 Key / 微信 AppID 时使用离线地图，小程序登录不可用
+      MAP_PROVIDER: ${MAP_PROVIDER:-}
+      AMAP_KEY: ${AMAP_KEY:-}
+      AMAP_SECURITY_CODE: ${AMAP_SECURITY_CODE:-}
+      TMAP_KEY: ${TMAP_KEY:-}
+      WECHAT_APPID: ${WECHAT_APPID:-}
+      WECHAT_SECRET: ${WECHAT_SECRET:-}
+    mem_limit: 400m
+    ports:
+      - "127.0.0.1:${API_PORT:-3100}:3000"
+    volumes:
+      - uploads:/data/uploads
+
+  # Web 静态文件 + /api 反向代理（镜像内置 deploy/nginx.conf）
+  web:
+    image: ${ZUPU_REGISTRY:-ghcr.io/zongyangbigpolo/}zupu-web:${ZUPU_TAG:-latest}
+    container_name: zupu-web
+    restart: unless-stopped
+    depends_on: [api]
+    mem_limit: 64m
+    ports:
+      - "${WEB_PORT:-80}:80"
+
+volumes:
+  db-data:
+  uploads:
