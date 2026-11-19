@@ -1,0 +1,42 @@
+{
+  "name": "@zupu/shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "族谱系统共享代码：类型、亲属关系计算、字辈规则、五代树布局、API 客户端（Web 与小程序共用）",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/cjs/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    },
+    "./kinship": {
+      "import": {
+        "types": "./dist/esm/kinship/index.d.ts",
+        "default": "./dist/esm/kinship/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/kinship/index.d.ts",
+        "default": "./dist/cjs/kinship/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.esm.json && tsc -p tsconfig.cjs.json && node scripts/fix-pkg.mjs",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "relationship.js": "1.2.9"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.7"
+  }
+}

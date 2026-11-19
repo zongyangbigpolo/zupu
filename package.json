@@ -1,0 +1,17 @@
+{
+  "name": "zupu",
+  "private": true,
+  "version": "0.1.0",
+  "description": "多家族族谱平台",
+  "workspaces": ["packages/shared", "apps/api", "apps/web"],
+  "scripts": {
+    "build:shared": "npm run build -w @zupu/shared",
+    "build": "npm run build -w @zupu/shared && npm run build -w @zupu/api && npm run build -w @zupu/web",
+    "test": "npm run test -w @zupu/shared && npm run test -w @zupu/api",
+    "dev:api": "npm run dev -w @zupu/api",
+    "dev:web": "npm run dev -w @zupu/web",
+    "db:migrate": "npm run migration:run -w @zupu/api",
+    "db:seed": "npm run seed -w @zupu/api"
+  },
+  "engines": { "node": ">=20" }
+}

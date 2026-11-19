@@ -1,0 +1,9 @@
+import { DefaultNamingStrategy, NamingStrategyInterface } from 'typeorm';
+
+const snake = (s: string) => s.replace(/([a-z0-9])([A-Z])/g, '$1_$2').toLowerCase();
+
+export class SnakeNamingStrategy extends DefaultNamingStrategy implements NamingStrategyInterface {
+  columnName(propertyName: string, customName: string | undefined, prefixes: string[]): string {
+    return customName ?? snake([...prefixes, propertyName].join('_'));
+  }
+}

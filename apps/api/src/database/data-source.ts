@@ -1,0 +1,24 @@
+import 'reflect-metadata';
+import { types } from 'pg';
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { config } from '../config';
+import { ENTITIES } from '../entities';
+import { SnakeNamingStrategy } from './naming';
+import { Init1731990000000 } from './migrations/1731990000000-Init';
+
+// DATE 列按字符串返回，避免时区偏移（族谱日期多为古代日期）
+types.setTypeParser(1082, (v: string) => v);
+
+export function dataSourceOptions(url = config.databaseUrl): DataSourceOptions {
+  return {
+    type: 'postgres',
+    url,
+    entities: ENTITIES,
+    migrations: [Init1731990000000],
+    namingStrategy: new SnakeNamingStrategy(),
+    synchronize: false,
+    migrationsRun: false,
+  };
+}
+
+export const AppDataSource = new DataSource(dataSourceOptions());
