@@ -16,6 +16,9 @@ import type {
   PrivacyLevel,
   RelationType,
 } from '@zupu/shared';
+import { HERITAGE_ENTITIES } from './heritage';
+
+export * from './heritage';
 
 // 注意：表结构以 src/database/migrations 为准，实体仅做映射（synchronize 关闭）。
 // 后续里程碑（M2–M5）新增表请新增迁移文件 + 新实体，不要修改已发布的迁移。
@@ -182,4 +185,5 @@ export const ENTITIES = [
   MediaEntity,
   LifeEventEntity,
   AuditLogEntity,
+  ...HERITAGE_ENTITIES,
 ];

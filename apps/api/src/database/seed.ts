@@ -11,6 +11,7 @@ import {
   UserEntity,
 } from '../entities';
 import { AppDataSource } from './data-source';
+import { seedHeritage } from './seed-heritage';
 import { generateLiClan, generateWangClan, LI_POEM, reignText, type SeedEvent, type SeedMarriage, type SeedParent, type SeedPerson } from './seed-data';
 
 export const DEMO_ACCOUNTS = {
@@ -162,6 +163,7 @@ export async function seed(ds: DataSource, opts: { reset?: boolean } = {}) {
       { clanId: wang.id, userId: superAdmin.id, entity: 'clan', entityId: wang.id, action: 'create', after: { name: wang.name } as any },
       { clanId: wang.id, userId: superAdmin.id, entity: 'membership', entityId: null, action: 'appoint-admin', after: { phone: wangAdmin.phone } as any },
     ]);
+    await seedHeritage(em, { clanId: li.id, founderId: li.founderId!, adminUserId: liAdmin.id, memberUserId: liMember.id });
     const key = (k?: { key: string }) => (k ? liIds.get(k.key) : undefined);
     const result = {
       liClanId: li.id,

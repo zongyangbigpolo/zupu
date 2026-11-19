@@ -9,6 +9,7 @@ import { dataSourceOptions } from './database/data-source';
 import { AiModule } from './modules/ai/ai';
 import { AuthModule } from './modules/auth/auth.module';
 import { ClansModule } from './modules/clans/clans.module';
+import { HeritageModule } from './modules/heritage/heritage.module';
 import { KinshipModule } from './modules/kinship/kinship';
 import { MediaModule } from './modules/media/media';
 import { PersonsModule } from './modules/persons/persons.module';
@@ -39,6 +40,8 @@ import { ImportDraftsModule } from './modules/import-drafts/import-drafts';
     ClanLinksModule,
     GedcomModule,
     ImportDraftsModule,
+    // M2 内容与传承
+    HeritageModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: AuthGuard }],
 })
