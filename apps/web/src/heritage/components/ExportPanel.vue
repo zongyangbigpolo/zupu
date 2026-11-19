@@ -18,7 +18,7 @@
         <el-icon :size="36" color="#999"><Share /></el-icon>
         <h4>GEDCOM</h4>
         <p class="muted">国际通用族谱格式</p>
-        <el-button disabled>敬请期待</el-button>
+        <el-button @click="router.push(`/clans/${clanId}/gedcom`)">前往 GEDCOM 导入导出</el-button>
       </el-card>
     </div>
     <p class="muted" style="margin-top: 12px">照片、音视频文件存放在对象存储中，清单见导出文件的“多媒体清单”。平台每日自动备份数据库。</p>
@@ -27,9 +27,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { downloadFile, heritage } from '../api';
 
 const props = defineProps<{ clanId: string; clanName: string }>();
+const router = useRouter();
 const busy = ref<'' | 'xlsx' | 'json'>('');
 async function go(f: 'xlsx' | 'json') {
   busy.value = f;

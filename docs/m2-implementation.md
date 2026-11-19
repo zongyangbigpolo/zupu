@@ -2,7 +2,7 @@
 
 总体设计以 [design.md](design.md) 为准，扩展约定见 [m1-implementation.md](m1-implementation.md)。M2 全部后端代码在 `apps/api/src/modules/heritage/`（一个 `HeritageModule`），前端在 `apps/web/src/heritage/`，共享类型与客户端在 `packages/shared/src/heritage.ts`（`createHeritageApi`）。
 
-## 1. 数据库（迁移 `1732600000000-M2Heritage`）
+## 1. 数据库（迁移 `1732610000000-M2Heritage`，排在 M5 迁移之后）
 
 | 表 | 说明 |
 |---|---|
@@ -11,7 +11,7 @@
 | `memorial_message` | 纪念馆留言 |
 | `memorial_tribute` | 献花 / 点烛；`UNIQUE(person, user, kind, tribute_day)` → 每人每天各一次 |
 | `clan_document` | 家训、家规、谱序、凡例（富文本 + `vertical` 竖排） |
-| `import_batch` | Excel 导入批次（预览行 + 校验结果，提交后标记 `committed`）。AI OCR 的 `import_draft` 留给 M5 |
+| `import_batch` | Excel 导入批次（预览行 + 校验结果，提交后标记 `committed`）。AI OCR 草稿用 M5 的 `import_draft` 表 |
 | `backup_job` | 备份记录 |
 
 M1 的 `MediaEntity` 未改动；新增列由 gallery 模块用原生 SQL 读写。
