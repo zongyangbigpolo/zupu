@@ -14,6 +14,10 @@ export const router = createRouter({
     { path: '/persons/:id/tree', component: () => import('./views/TreeView.vue'), meta: { title: '五代树' } },
     { path: '/persons/:id/edit', component: () => import('./views/PersonEditView.vue'), meta: { title: '编辑成员', login: true } },
     { path: '/super', component: () => import('./views/SuperAdminView.vue'), meta: { title: '平台管理', login: true, super: true } },
+    // M5 扩展
+    { path: '/clans/:clanId/links', component: () => import('./views/m5/ClanLinksView.vue'), meta: { title: '跨族连谱', login: true } },
+    { path: '/clans/:clanId/gedcom', component: () => import('./views/m5/GedcomView.vue'), meta: { title: '数据导入导出', login: true } },
+    { path: '/super/links', component: () => import('./views/m5/SuperLinksView.vue'), meta: { title: '连谱审批', login: true, super: true } },
   ],
 });
 

@@ -1,7 +1,7 @@
 import { Controller, HttpException, HttpStatus, Module, Param, Post } from '@nestjs/common';
 import { LoginRequired } from '../../common/auth';
 
-const COMING_SOON = { message: 'AI 功能敬请期待：将在后续版本（M5）提供', code: 'AI_NOT_IMPLEMENTED' };
+const COMING_SOON = { message: 'AI 功能敬请期待：将在后续版本提供', code: 'AI_NOT_IMPLEMENTED' };
 
 /**
  * AI 预留位（M5 实现）：

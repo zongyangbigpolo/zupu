@@ -77,7 +77,7 @@
             <div class="row">
               <span class="card-title grow">生平事迹</span>
               <el-tooltip v-if="isAdmin" content="AI 生成人物小传，敬请期待">
-                <el-button size="small" :icon="'MagicStick'" disabled>AI 生成小传</el-button>
+                <el-button size="small" :icon="'MagicStick'" disabled>AI 生成小传（敬请期待）</el-button>
               </el-tooltip>
             </div>
           </template>

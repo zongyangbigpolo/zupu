@@ -4,6 +4,7 @@
       <router-link to="/" class="logo title-serif">族 谱</router-link>
       <router-link to="/" class="nav">我的族谱</router-link>
       <router-link v-if="auth.isSuper" to="/super" class="nav">平台管理</router-link>
+      <router-link v-if="auth.isSuper" to="/super/links" class="nav">连谱审批</router-link>
       <div class="grow" />
       <template v-if="auth.user">
         <el-tag v-if="auth.isSuper" type="danger" effect="dark" size="small">超级管理员</el-tag>

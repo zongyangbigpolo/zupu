@@ -11,6 +11,8 @@
         </div>
         <el-button v-if="founderId" type="danger" :icon="'Share'" @click="router.push(`/persons/${founderId}/tree`)">从始祖看五代树</el-button>
         <el-button :icon="'Connection'" @click="router.push(`/clans/${clan.id}/kinship`)">亲属关系查询</el-button>
+        <el-button v-if="clan.myRole !== 'visitor'" :icon="'Link'" @click="router.push(`/clans/${clan.id}/links`)">跨族连谱</el-button>
+        <el-button v-if="isAdmin" :icon="'Files'" @click="router.push(`/clans/${clan.id}/gedcom`)">导入导出</el-button>
         <el-button v-if="isAdmin" type="warning" :icon="'Setting'" @click="router.push(`/clans/${clan.id}/admin`)">家族管理</el-button>
       </div>
       <p v-if="clan.description" class="desc">{{ clan.description }}</p>

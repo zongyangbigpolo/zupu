@@ -14,6 +14,9 @@ import { MediaModule } from './modules/media/media';
 import { PersonsModule } from './modules/persons/persons.module';
 import { RelationsModule } from './modules/relations/relations';
 import { SuperAdminModule } from './modules/super-admin/super-admin';
+import { ClanLinksModule } from './modules/clan-links/clan-links.module';
+import { GedcomModule } from './modules/gedcom/gedcom.module';
+import { ImportDraftsModule } from './modules/import-drafts/import-drafts';
 
 /**
  * 模块清单。后续里程碑（M2 内容与传承、M3 可视化、M4 小程序与互动、M5 扩展）
@@ -32,6 +35,10 @@ import { SuperAdminModule } from './modules/super-admin/super-admin';
     MediaModule,
     SuperAdminModule,
     AiModule,
+    // M5 扩展
+    ClanLinksModule,
+    GedcomModule,
+    ImportDraftsModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: AuthGuard }],
 })
