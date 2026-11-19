@@ -175,6 +175,9 @@ export class AuditLogEntity {
   @CreateDateColumn({ type: 'timestamptz' }) createdAt: Date;
 }
 
+import { INTERACTION_ENTITIES } from './interaction';
+export * from './interaction';
+
 export const ENTITIES = [
   UserEntity,
   ClanEntity,
@@ -186,4 +189,5 @@ export const ENTITIES = [
   LifeEventEntity,
   AuditLogEntity,
   ...HERITAGE_ENTITIES,
+  ...INTERACTION_ENTITIES,
 ];

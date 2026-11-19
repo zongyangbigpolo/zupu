@@ -18,6 +18,12 @@ import { SuperAdminModule } from './modules/super-admin/super-admin';
 import { ClanLinksModule } from './modules/clan-links/clan-links.module';
 import { GedcomModule } from './modules/gedcom/gedcom.module';
 import { ImportDraftsModule } from './modules/import-drafts/import-drafts';
+// M4 小程序与互动
+import { ActivitiesModule } from './modules/activities/activities';
+import { ContactsModule } from './modules/contacts/contacts';
+import { NotificationsModule } from './modules/notifications/notifications';
+import { RemindersModule } from './modules/reminders/reminders';
+import { WechatModule } from './modules/wechat/wechat';
 
 /**
  * 模块清单。后续里程碑（M2 内容与传承、M3 可视化、M4 小程序与互动、M5 扩展）
@@ -42,6 +48,12 @@ import { ImportDraftsModule } from './modules/import-drafts/import-drafts';
     ImportDraftsModule,
     // M2 内容与传承
     HeritageModule,
+    // M4 小程序与互动
+    WechatModule,
+    NotificationsModule,
+    ContactsModule,
+    ActivitiesModule,
+    RemindersModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: AuthGuard }],
 })

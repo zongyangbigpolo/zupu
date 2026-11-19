@@ -20,4 +20,19 @@ export const config = {
   },
   maxUploadMb: Number(process.env.MAX_UPLOAD_MB ?? 100),
   webDist: process.env.WEB_DIST,
+  /** M4 微信小程序：AppID/AppSecret 在微信公众平台「开发管理 → 开发设置」获取 */
+  wechat: {
+    appId: process.env.WECHAT_APPID ?? '',
+    secret: process.env.WECHAT_SECRET ?? '',
+    /** 模拟微信接口（开发/测试）。生产环境必须配置真实 AppID，不会自动启用模拟 */
+    mock: process.env.WECHAT_MOCK === 'true' || (process.env.NODE_ENV !== 'production' && !process.env.WECHAT_APPID),
+    /** 订阅消息模板 ID（公众平台「订阅消息」中选用） */
+    tplReminder: process.env.WECHAT_TPL_REMINDER ?? '',
+    tplActivity: process.env.WECHAT_TPL_ACTIVITY ?? '',
+    /** 小程序版本：developer / trial / formal */
+    miniprogramState: process.env.WECHAT_MP_STATE ?? 'formal',
+  },
+  /** 每日提醒任务：北京时间几点执行；off 关闭 */
+  reminderHour: Number(process.env.REMINDER_HOUR ?? 8),
+  reminderScheduler: process.env.REMINDER_SCHEDULER ?? (process.env.NODE_ENV === 'test' ? 'off' : 'on'),
 };

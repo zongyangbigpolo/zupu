@@ -12,6 +12,7 @@ import {
 } from '../entities';
 import { AppDataSource } from './data-source';
 import { seedHeritage } from './seed-heritage';
+import { seedInteraction } from './seed-interaction';
 import { generateLiClan, generateWangClan, LI_POEM, reignText, type SeedEvent, type SeedMarriage, type SeedParent, type SeedPerson } from './seed-data';
 
 export const DEMO_ACCOUNTS = {
@@ -157,6 +158,7 @@ export async function seed(ds: DataSource, opts: { reset?: boolean } = {}) {
       { userId: liMember.id, clanId: li.id, role: 'member', linkedPersonId: liIds.get(me.key)! },
       { userId: wangAdmin.id, clanId: wang.id, role: 'admin', linkedPersonId: null },
     ]);
+    await seedInteraction(em, { clanId: li.id, adminId: liAdmin.id, memberId: liMember.id }); // M4
     await em.getRepository(AuditLogEntity).insert([
       { clanId: li.id, userId: superAdmin.id, entity: 'clan', entityId: li.id, action: 'create', after: { name: li.name } as any },
       { clanId: li.id, userId: superAdmin.id, entity: 'membership', entityId: null, action: 'appoint-admin', after: { phone: liAdmin.phone } as any },
