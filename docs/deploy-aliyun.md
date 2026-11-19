@@ -10,7 +10,7 @@
 | 容器 | 端口 | 内存上限 | 说明 |
 | --- | --- | --- | --- |
 | `zupu-web` | `0.0.0.0:80` | 64 MB | Nginx：Web 静态文件 + 反代 `/api`（上传文件经 `/api/media/...` 访问） |
-| `zupu-api` | `127.0.0.1:3100` | 400 MB | NestJS API，启动时自动执行数据库迁移 |
+| `zupu-api` | `127.0.0.1:3100` | 320 MB | NestJS API，启动时自动执行数据库迁移 |
 | `zupu-db` | `127.0.0.1:5434` | 256 MB | 独立的 PostgreSQL 16，已按低内存调优 |
 
 - 数据卷：`zupu_db-data`（数据库）、`zupu_uploads`（上传文件与每日备份 `backups/`，保留 7 天）。
@@ -29,7 +29,7 @@
 deploy/aliyun/deploy.sh admin@47.103.58.159
 ```
 
-脚本会：上传 compose 文件 → 首次在服务器生成 `.env` → 写入镜像 tag（默认当前 HEAD 短哈希）→
+脚本会：上传 compose 文件 → 首次在服务器生成 `.env` → 写入镜像 tag（默认为最近一次改动 `apps/`、`packages/shared` 等镜像内容的提交短哈希）→
 `docker compose pull` → `docker compose up -d` → 导入示例数据（库中已有数据时自动跳过）。
 
 可选环境变量：`ZUPU_TAG=<tag>` 指定镜像版本（回滚用）；`NO_SEED=1` 不导入示例数据；
@@ -67,4 +67,6 @@ sudo docker compose exec db pg_dump -U zupu -Fc zupu > zupu-$(date +%F).dump
 ## 排查
 
 - 外网打不开但服务器上 `curl http://127.0.0.1/` 正常：检查阿里云安全组是否放行 TCP 80。
-- 内存紧张：`free -m`、`sudo docker stats --no-stream`；各容器已设置内存上限，API 堆上限 256 MB。
+- 内存紧张：`free -m`、`sudo docker stats --no-stream`；各容器已设置内存上限，API 堆上限 192 MB；
+  zupu 容器设置了较高的 `oom_score_adj`，内存耗尽时内核优先结束 zupu 而非服务器上的其他业务。
+- 服务器 `vm.swappiness=0`，内存紧张时几乎不使用 swap，容易触发 OOM；如需缓解可考虑调大（影响全机，请自行评估）。
