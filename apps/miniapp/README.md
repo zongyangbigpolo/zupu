@@ -1,27 +1,15 @@
-# 微信小程序（M4，尚未实现）
+# 族谱微信小程序（uni-app + Vue 3）
 
-技术方案：uni-app（Vue 3）。本目录为预留位置，M4 阶段在此初始化 uni-app 工程。
+功能：微信一键登录（手机号绑定已有账号）/ 手机号密码登录、家族列表与首页、族人搜索、人物档案、**五代树**（Canvas 2D，拖动、双指缩放、点击换中心）、**亲属关系查询**、我在谱中、族人通讯录、活动与公告（报名、签到）、生日忌日提醒（农历）、消息中心。
 
-复用方式：
+```bash
+npm run build:shared                       # 在仓库根目录：先构建 @zupu/shared
+cd apps/miniapp && npm install             # 独立安装（不在根 workspaces 中）
+npm run dev:h5                             # 浏览器预览，/api 代理到 API_URL（默认 http://localhost:3000）
+VITE_API_BASE=https://你的域名/api npm run build:mp-weixin   # 用微信开发者工具导入 dist/build/mp-weixin
+npm run type-check
+```
 
-- **类型与 API 客户端**：`@zupu/shared` 中的 `createApiClient(transport)` 与传输层无关，小程序端传入基于 `uni.request` 的适配器即可：
+页面位于 `src/pages`，API 客户端见 `src/api.ts`（`uni.request` 适配 `@zupu/shared` 的 `createApiClient` / `createInteractionApi`）。
 
-  ```ts
-  import { createApiClient } from '@zupu/shared';
-  export const api = createApiClient((req) =>
-    new Promise((resolve, reject) =>
-      uni.request({
-        url: BASE_URL + req.url,
-        method: req.method,
-        data: req.method === 'GET' ? req.params : req.data,
-        header: { Authorization: `Bearer ${uni.getStorageSync('zupu_token')}` },
-        success: (r) => (r.statusCode < 400 ? resolve(r.data) : reject(r)),
-        fail: reject,
-      }),
-    ),
-  );
-  ```
-
-- **五代树布局**：`layoutFamilyTree()` 输出节点坐标，小程序端用 Canvas 2D 直接绘制。
-- **亲属称谓、字辈推算、重名消歧**：`@zupu/shared` 中的纯函数，前后端一致。
-- **微信登录**：后端 `AuthService` 已预留 `wechat_openid / wechat_unionid` 字段，M4 新增 `POST /auth/wechat`（code 换 openid）签发同样的 JWT。
+上线前需要完成的事项（AppID、备案域名、类目、订阅消息模板、隐私指引等）见 [docs/m4-implementation.md](../../docs/m4-implementation.md#4-发布小程序需要您完成的事项)。

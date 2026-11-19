@@ -1,0 +1,19 @@
+{
+  "name": "族谱",
+  "appid": "",
+  "description": "多家族族谱：五代树、亲属关系、族人通讯录、活动与提醒",
+  "versionName": "0.1.0",
+  "versionCode": "100",
+  "mp-weixin": {
+    "appid": "touristappid",
+    "setting": { "urlCheck": true, "es6": true, "minified": true, "postcss": true },
+    "usingComponents": true,
+    "lazyCodeLoading": "requiredComponents",
+    "__usePrivacyCheck__": true
+  },
+  "h5": {
+    "title": "族谱",
+    "router": { "mode": "hash", "base": "./" }
+  },
+  "vueVersion": "3"
+}

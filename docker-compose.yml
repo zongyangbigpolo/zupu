@@ -45,6 +45,12 @@ services:
       BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
       BACKUP_METHOD: ${BACKUP_METHOD:-auto}
       FFMPEG_PATH: ${FFMPEG_PATH:-}
+      # M4 微信小程序（见 docs/m4-implementation.md）
+      WECHAT_APPID: ${WECHAT_APPID:-}
+      WECHAT_SECRET: ${WECHAT_SECRET:-}
+      WECHAT_TPL_REMINDER: ${WECHAT_TPL_REMINDER:-}
+      WECHAT_TPL_ACTIVITY: ${WECHAT_TPL_ACTIVITY:-}
+      REMINDER_HOUR: ${REMINDER_HOUR:-8}
     volumes:
       - uploads:/data/uploads
 

@@ -3,6 +3,7 @@
 一个支持多个家族共用的在线族谱系统：网页登录查看（小程序端在后续版本提供）。当前为 **M1 基础版**。
 
 > 设计方案见 [docs/design.md](docs/design.md)；M1 实现说明与后续扩展约定见 [docs/m1-implementation.md](docs/m1-implementation.md)；M2（内容与传承）见 [docs/m2-implementation.md](docs/m2-implementation.md)。
+> M4（微信小程序、通讯录、活动通知、生日忌日提醒）及小程序上线指南见 [docs/m4-implementation.md](docs/m4-implementation.md)。
 
 ## M1 功能
 

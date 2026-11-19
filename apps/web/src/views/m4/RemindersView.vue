@@ -25,7 +25,7 @@
                 <span v-if="r.person.generation" class="muted">第{{ r.person.generation }}世</span>
               </div>
               <div class="muted">
-                {{ r.dateText }} · 公历 {{ r.nextDate }}
+                {{ r.dateText }}<template v-if="r.calendar === 'lunar'"> · 公历 {{ r.nextDate }}</template>
                 <template v-if="r.years && r.years > 0"> · {{ r.kind === 'birth' ? `${r.years} 岁生日` : `逝世 ${r.years} 周年` }}</template>
               </div>
             </div>

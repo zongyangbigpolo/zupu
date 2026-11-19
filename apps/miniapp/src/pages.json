@@ -1,0 +1,36 @@
+{
+  "pages": [
+    { "path": "pages/index/index", "style": { "navigationBarTitleText": "我的族谱", "enablePullDownRefresh": true } },
+    { "path": "pages/login/index", "style": { "navigationBarTitleText": "登录" } },
+    { "path": "pages/clan/home", "style": { "navigationBarTitleText": "家族首页" } },
+    { "path": "pages/clan/coming", "style": { "navigationBarTitleText": "敬请期待" } },
+    { "path": "pages/person/search", "style": { "navigationBarTitleText": "族人查询" } },
+    { "path": "pages/person/detail", "style": { "navigationBarTitleText": "人物档案" } },
+    { "path": "pages/tree/index", "style": { "navigationBarTitleText": "五代树", "disableScroll": true } },
+    { "path": "pages/kinship/index", "style": { "navigationBarTitleText": "亲属关系" } },
+    { "path": "pages/contacts/index", "style": { "navigationBarTitleText": "族人通讯录" } },
+    { "path": "pages/contacts/edit", "style": { "navigationBarTitleText": "我的名片" } },
+    { "path": "pages/activity/list", "style": { "navigationBarTitleText": "活动与公告", "enablePullDownRefresh": true } },
+    { "path": "pages/activity/detail", "style": { "navigationBarTitleText": "活动详情" } },
+    { "path": "pages/reminders/index", "style": { "navigationBarTitleText": "生日忌日" } },
+    { "path": "pages/notifications/index", "style": { "navigationBarTitleText": "消息", "enablePullDownRefresh": true } },
+    { "path": "pages/me/index", "style": { "navigationBarTitleText": "我的" } }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "族谱",
+    "navigationBarBackgroundColor": "#8b1e1e",
+    "backgroundColor": "#faf6ee"
+  },
+  "tabBar": {
+    "color": "#8a6d3b",
+    "selectedColor": "#8b1e1e",
+    "backgroundColor": "#fffaf0",
+    "borderStyle": "black",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "族谱", "iconPath": "static/tab-clan.png", "selectedIconPath": "static/tab-clan-on.png" },
+      { "pagePath": "pages/notifications/index", "text": "消息", "iconPath": "static/tab-msg.png", "selectedIconPath": "static/tab-msg-on.png" },
+      { "pagePath": "pages/me/index", "text": "我的", "iconPath": "static/tab-me.png", "selectedIconPath": "static/tab-me-on.png" }
+    ]
+  }
+}
