@@ -5,6 +5,7 @@ import { config } from '../config';
 import { ENTITIES } from '../entities';
 import { SnakeNamingStrategy } from './naming';
 import { Init1731990000000 } from './migrations/1731990000000-Init';
+import { ActivationCode1731990100000 } from './migrations/1731990100000-ActivationCode';
 
 // DATE 列按字符串返回，避免时区偏移（族谱日期多为古代日期）
 types.setTypeParser(1082, (v: string) => v);
@@ -14,7 +15,7 @@ export function dataSourceOptions(url = config.databaseUrl): DataSourceOptions {
     type: 'postgres',
     url,
     entities: ENTITIES,
-    migrations: [Init1731990000000],
+    migrations: [Init1731990000000, ActivationCode1731990100000],
     namingStrategy: new SnakeNamingStrategy(),
     synchronize: false,
     migrationsRun: false,

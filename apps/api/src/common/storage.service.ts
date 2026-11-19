@@ -3,7 +3,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 import { createReadStream, promises as fs } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import type { Readable } from 'node:stream';
-import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { CreateBucketCommand, DeleteObjectCommand, GetObjectCommand, HeadBucketCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { config } from '../config';
 
@@ -39,21 +39,40 @@ class LocalDriver implements StorageDriver {
   }
 }
 
-class S3Driver implements StorageDriver {
-  private client = new S3Client({
-    endpoint: config.s3.endpoint,
+const s3Client = (endpoint: string | undefined) =>
+  new S3Client({
+    endpoint,
     region: config.s3.region,
     forcePathStyle: config.s3.forcePathStyle,
     credentials: { accessKeyId: config.s3.accessKeyId, secretAccessKey: config.s3.secretAccessKey },
   });
+
+class S3Driver implements StorageDriver {
+  private client = s3Client(config.s3.endpoint);
+  private publicClient = config.s3.publicEndpoint ? s3Client(config.s3.publicEndpoint) : null;
+  private ready: Promise<void> | null = null;
+  private ensureBucket() {
+    if (!config.s3.autoCreateBucket) return Promise.resolve();
+    this.ready ??= this.client
+      .send(new HeadBucketCommand({ Bucket: config.s3.bucket }))
+      .then(() => undefined)
+      .catch(() => this.client.send(new CreateBucketCommand({ Bucket: config.s3.bucket })).then(() => undefined))
+      .catch((e) => {
+        this.ready = null;
+        throw e;
+      });
+    return this.ready;
+  }
   async put(key: string, body: Buffer, mimeType: string) {
+    await this.ensureBucket();
     await this.client.send(new PutObjectCommand({ Bucket: config.s3.bucket, Key: key, Body: body, ContentType: mimeType }));
   }
   async remove(key: string) {
     await this.client.send(new DeleteObjectCommand({ Bucket: config.s3.bucket, Key: key }));
   }
   async presign(key: string, expiresSec: number) {
-    return getSignedUrl(this.client, new GetObjectCommand({ Bucket: config.s3.bucket, Key: key }), { expiresIn: expiresSec });
+    if (!this.publicClient) return null;
+    return getSignedUrl(this.publicClient, new GetObjectCommand({ Bucket: config.s3.bucket, Key: key }), { expiresIn: expiresSec });
   }
   async read(key: string) {
     const r = await this.client.send(new GetObjectCommand({ Bucket: config.s3.bucket, Key: key }));

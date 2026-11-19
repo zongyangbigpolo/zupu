@@ -8,7 +8,7 @@ import { ClanEntity, MembershipEntity } from '../../entities';
 import { isUuid } from '../../common/access.service';
 import { AuditService } from '../../common/audit.service';
 import { AuthUser, CurrentUser, SuperAdminOnly } from '../../common/auth';
-import { AuthService } from '../auth/auth.service';
+import { AuthService, PHONE_RE } from '../auth/auth.service';
 import { CLAN_EDITABLE, queryAuditLogs, toClan } from '../clans/clans.service';
 
 class ClanCreateDto {
@@ -90,8 +90,8 @@ export class SuperAdminService {
     const { adminPhone, ...rest } = dto;
     const saved = await this.clans.save(this.clans.create({ ...rest, createdBy: user.id }));
     await this.audit.log({ clanId: saved.id, userId: user.id, entity: 'clan', entityId: saved.id, action: 'create', after: toClan(saved) });
-    if (adminPhone) await this.appoint(user, saved.id, adminPhone);
-    return toClan(saved);
+    const admin = adminPhone ? await this.appoint(user, saved.id, adminPhone) : null;
+    return { ...toClan(saved), adminActivationCode: admin?.activationCode ?? null };
   }
 
   async update(user: AuthUser, id: string, dto: ClanAdminUpdateDto) {
@@ -107,7 +107,7 @@ export class SuperAdminService {
   /** 任命家族管理员（手机号尚未注册时预建账号，对方用该手机号注册/登录后即获得权限） */
   async appoint(user: AuthUser, clanId: string, phone: string): Promise<ClanAdminInfo> {
     await this.clan(clanId);
-    const u = await this.auth.findOrCreateByPhone(phone?.trim());
+    const { user: u, activationCode } = await this.auth.findOrCreateByPhone(phone?.trim());
     let m = await this.memberships.findOne({ where: { clanId, userId: u.id } });
     if (m?.role === 'admin') throw new BadRequestException('该用户已是本族管理员');
     const before = m ? { ...m } : null;
@@ -115,7 +115,7 @@ export class SuperAdminService {
     else m = this.memberships.create({ clanId, userId: u.id, role: 'admin' });
     m = await this.memberships.save(m);
     await this.audit.log({ clanId, userId: user.id, entity: 'membership', entityId: m.id, action: 'appoint-admin', before, after: { phone: u.phone, role: 'admin' } });
-    return (await this.admins(clanId)).find((a) => a.userId === u.id)!;
+    return { ...(await this.admins(clanId)).find((a) => a.userId === u.id)!, activationCode };
   }
 
   /** 撤销管理员：降为普通族人（保留"我在谱中"绑定） */
@@ -132,9 +132,10 @@ export class SuperAdminService {
   /** 更换管理员：撤销现有全部管理员并任命新的 */
   async replace(user: AuthUser, clanId: string, phone: string) {
     const current = await this.admins(clanId);
-    const target = await this.auth.findOrCreateByPhone(phone?.trim());
-    for (const a of current) if (a.userId !== target.id) await this.revoke(user, clanId, a.userId);
-    if (current.some((a) => a.userId === target.id)) return (await this.admins(clanId)).find((a) => a.userId === target.id)!;
+    if (!PHONE_RE.test(phone?.trim() ?? '')) throw new BadRequestException('手机号格式不正确');
+    const keep = current.find((a) => a.phone === phone.trim());
+    for (const a of current) if (a !== keep) await this.revoke(user, clanId, a.userId);
+    if (keep) return keep;
     return this.appoint(user, clanId, phone);
   }
 }

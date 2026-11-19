@@ -110,6 +110,11 @@ describe('kinship', () => {
     expect(r.commonAncestor?.id).toBe('G2a');
   });
 
+  it('共同祖先优先取本族人而非外姓配偶', () => {
+    const r = k('G4a', 'D4');
+    expect(r.commonAncestor?.id).toBe('G3a');
+  });
+
   it('堂兄弟：按出生日期区分兄/弟', () => {
     const r = k('G4b', 'G4a');
     expect(r.termAtoB).toBe('堂哥');
@@ -132,6 +137,17 @@ describe('kinship', () => {
     const r = k('G4a', 'W3a');
     expect(r.termAtoB).toBe('妈妈');
     expect(r.steps).toHaveLength(1);
+  });
+
+  it('再从堂亲：兄/弟按出生日期取舍', () => {
+    const extra = new KinshipGraph(
+      [...persons, P('G5x', 'male', 5, { birthDate: '1950-01-01' }), P('G5y', 'female', 5, { birthDate: '1955-01-01' }), P('G4z', 'male', 4)],
+      [...edges, pc('G4a', 'G5x'), pc('G3a', 'G4z'), pc('G4z', 'G5y')],
+      marriages,
+    );
+    const r = computeKinship(extra, 'G5y', 'G5x');
+    expect(r.termsAtoB).toHaveLength(1);
+    expect(r.termAtoB).toMatch(/哥|兄/);
   });
 
   it('兄妹', () => {
@@ -211,5 +227,29 @@ describe('字辈与消歧', () => {
   });
   it('重名消歧标签', () => {
     expect(disambiguationLabel({ generation: 12, fatherName: '李承德', rankInSiblings: 2 })).toBe('第12世·父李承德·行二');
+  });
+});
+
+describe('五代树布局', () => {
+  it('祖先层节点不重叠（一方有上代、另一方无上代）', async () => {
+    const { layoutFamilyTree } = await import('../src/tree-layout');
+    const n = (id: string, gender: 'male' | 'female', depth: number, role: 'center' | 'ancestor' = 'ancestor') => ({
+      id, fullName: id, gender, generation: null, generationChar: null, rankInSiblings: null, isLiving: false, isExternal: false,
+      birthText: null, deathText: null, role, depth, hasMoreUp: false, hasMoreDown: false,
+    });
+    const e = (s: string, t: string) => ({ source: s, target: t, type: 'parent' as const });
+    const tree = {
+      centerId: 'C', line: 'main' as const, up: 5, down: 0, truncated: false,
+      nodes: [n('C', 'male', 0, 'center'), n('F', 'male', -1), n('M', 'female', -1), n('GF', 'male', -2), n('GM', 'female', -2), n('GGF', 'male', -3), n('MF', 'male', -2)],
+      edges: [e('F', 'C'), e('M', 'C'), e('GF', 'F'), e('GM', 'F'), e('GGF', 'GF'), e('MF', 'M')],
+    };
+    const W = 110;
+    const { positions } = layoutFamilyTree(tree, { nodeWidth: W });
+    const rows = new Map<number, number[]>();
+    for (const p of Object.values(positions)) rows.set(p.y, [...(rows.get(p.y) ?? []), p.x]);
+    for (const xs of rows.values()) {
+      xs.sort((a, b) => a - b);
+      for (let i = 1; i < xs.length; i++) expect(xs[i] - xs[i - 1]).toBeGreaterThanOrEqual(W);
+    }
   });
 });

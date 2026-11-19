@@ -1,0 +1,25 @@
+:root {
+  --zp-red: #8b1e1e;
+  --zp-gold: #c9a45c;
+  --zp-paper: #faf6ee;
+}
+html, body, #app { margin: 0; height: 100%; }
+body {
+  font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
+  background: var(--zp-paper);
+  color: #2c2c2c;
+}
+a { color: inherit; text-decoration: none; }
+.page { max-width: 1200px; margin: 0 auto; padding: 20px; }
+.page-wide { padding: 12px 20px; }
+.title-serif { font-family: 'Songti SC', 'STSong', 'SimSun', serif; }
+.muted { color: #888; font-size: 13px; }
+.row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.grow { flex: 1; }
+.card-title { font-weight: 600; font-size: 16px; }
+.poem-char { display: inline-flex; flex-direction: column; align-items: center; margin: 4px 6px; }
+.poem-char b { font-size: 22px; font-family: 'Songti SC', 'STSong', serif; color: var(--zp-red); }
+.poem-char small { color: #999; font-size: 11px; }
+.male { color: #2f6fd6; }
+.female { color: #d14d72; }
+.rich p { margin: 0 0 8px; line-height: 1.8; }

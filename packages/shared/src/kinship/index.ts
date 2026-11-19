@@ -46,7 +46,9 @@ export class KinshipGraph {
     }
     for (const e of parentEdges) {
       if (!this.persons.has(e.parentId) || !this.persons.has(e.childId)) continue;
-      const cost = e.isMainLine || e.relationType === 'biological' ? COST_MAIN : COST_SIDE;
+      // 同等长度时优先经本族父/母（共同祖先取本族人而非外姓配偶）
+      const ext = this.persons.get(e.parentId)!.isExternal ? 0.01 : 0;
+      const cost = (e.isMainLine || e.relationType === 'biological' ? COST_MAIN : COST_SIDE) + ext;
       this.adj.get(e.childId)!.push({ to: e.parentId, kind: 'parent', cost });
       this.adj.get(e.parentId)!.push({ to: e.childId, kind: 'child', cost });
     }
@@ -186,9 +188,12 @@ export function stepsToChain(graph: KinshipGraph, steps: KinshipStep[]): string[
       if (cmp !== 0) {
         const older = cmp < 0;
         tokens.push(sib.gender === 'female' ? (older ? '姐姐' : '妹妹') : older ? '哥哥' : '弟弟');
-        i++;
-        continue;
+      } else {
+        // 长幼未知：用"兄弟/姐妹"，避免被误算成本人或亲兄弟
+        tokens.push(sib.gender === 'female' ? '姐妹' : '兄弟');
       }
+      i++;
+      continue;
     }
     tokens.push(tokenFor(s.kind, graph.persons.get(s.to)!.gender));
   }
@@ -204,7 +209,7 @@ function callRelationship(text: string, sex: number, reverse: boolean): string[]
   }
 }
 
-const OLDER_CHARS = ['哥', '姐', '伯'];
+const OLDER_CHARS = ['哥', '姐', '伯', '兄'];
 const YOUNGER_CHARS = ['弟', '妹', '叔'];
 
 /** 候选称谓按长幼过滤（如 堂哥/堂弟、堂伯/堂叔） */

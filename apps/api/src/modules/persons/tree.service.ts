@@ -99,9 +99,10 @@ export class TreeService {
       [allIds, clan.id],
     );
     const edgesRows: any[] = await this.ds.query(
-      `SELECT parent_id, child_id, relation_type, is_main_line, sort_order FROM parent_child
-        WHERE parent_id = ANY($1::uuid[]) AND child_id = ANY($1::uuid[])
-        ORDER BY sort_order, child_id`,
+      `SELECT pc.parent_id, pc.child_id, pc.relation_type, pc.is_main_line, pc.sort_order FROM parent_child pc
+        WHERE pc.parent_id = ANY($1::uuid[]) AND pc.child_id = ANY($1::uuid[])
+          AND ${f}
+        ORDER BY pc.sort_order, pc.child_id`,
       [allIds],
     );
     const rowsById = new Map(rows.map((r) => [r.id, r]));

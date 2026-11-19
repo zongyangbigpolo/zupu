@@ -145,7 +145,13 @@ export function layoutFamilyTree(tree: TreeResponse, opts: TreeLayoutOptions = {
   const measureAnc = (id: string): number => {
     const ps = ancParents.get(id) ?? [];
     const pw = ps.reduce((s, p) => s + measureAnc(p), 0) + Math.max(0, ps.length - 1) * GAP;
-    const w = Math.max(W, pw);
+    let w = Math.max(W, pw);
+    const withAnc = ps.filter((p) => (ancParents.get(p)?.length ?? 0) > 0);
+    if (ps.length > 1 && withAnc.length === 1) {
+      // 与 placeAnc 的"主线居中、另一方并列"布局一致：按两侧最大外延对称预留宽度
+      const half = Math.max(ancWidth.get(withAnc[0])! / 2, W / 2 + (ps.length - 1) * (W + SGAP));
+      w = Math.max(W, 2 * half);
+    }
     ancWidth.set(id, w);
     return w;
   };
@@ -153,6 +159,28 @@ export function layoutFamilyTree(tree: TreeResponse, opts: TreeLayoutOptions = {
 
   const placeAnc = (id: string, cx: number) => {
     const ps = ancParents.get(id) ?? [];
+    const withAnc = ps.filter((p) => (ancParents.get(p)?.length ?? 0) > 0);
+    // 只有一方（通常是父亲）还有上代时：该方正对子女上方，另一方（外姓母亲）并列在旁，主线保持竖直
+    if (ps.length > 1 && withAnc.length === 1) {
+      const main = withAnc[0];
+      const others = ps.filter((p) => p !== main);
+      if (!placed.has(main)) {
+        positions[main] = { x: cx, y: byId.get(main)!.depth * ROW };
+        placed.add(main);
+      }
+      placeAnc(main, cx);
+      const rightSide = byId.get(main)!.gender === 'male';
+      let x = rightSide ? cx + W / 2 + SGAP : cx - W / 2 - SGAP;
+      for (const o of others) {
+        const ox = rightSide ? x + W / 2 : x - W / 2;
+        if (!placed.has(o)) {
+          positions[o] = { x: ox, y: byId.get(o)!.depth * ROW };
+          placed.add(o);
+        }
+        x = rightSide ? x + W + SGAP : x - W - SGAP;
+      }
+      return;
+    }
     const pw = ps.reduce((s, p) => s + ancWidth.get(p)!, 0) + Math.max(0, ps.length - 1) * GAP;
     let x = cx - pw / 2;
     for (const p of ps) {

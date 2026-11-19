@@ -165,14 +165,14 @@ export class ClansService {
   async addMember(user: AuthUser, clanId: string, dto: { phone: string; linkedPersonId?: string | null; displayName?: string }) {
     await this.access.clanAccess(user, clanId, 'admin');
     if (dto.linkedPersonId) await this.access.assertPersonsInClan(clanId, [dto.linkedPersonId]);
-    const u = await this.auth.findOrCreateByPhone(dto.phone?.trim(), dto.displayName);
+    const { user: u, activationCode } = await this.auth.findOrCreateByPhone(dto.phone?.trim(), dto.displayName);
     let m = await this.memberships.findOne({ where: { clanId, userId: u.id } });
     if (m) throw new BadRequestException('该用户已是本族成员');
     m = await this.memberships.save(
       this.memberships.create({ clanId, userId: u.id, role: 'member', linkedPersonId: dto.linkedPersonId ?? null }),
     );
     await this.audit.log({ clanId, userId: user.id, entity: 'membership', entityId: m.id, action: 'add-member', after: { phone: u.phone, linkedPersonId: m.linkedPersonId } });
-    return (await this.members(user, clanId)).find((x) => x.id === m!.id)!;
+    return { ...(await this.members(user, clanId)).find((x) => x.id === m!.id)!, activationCode };
   }
 
   private async membershipFor(user: AuthUser, id: string) {

@@ -50,21 +50,22 @@ export class AuthGuard implements CanActivate {
     const req = ctx.switchToHttp().getRequest();
     const header: string | undefined = req.headers.authorization;
     req.user = null;
+    let tokenError: string | null = null;
     if (header?.startsWith('Bearer ')) {
-      let payload: JwtPayload;
       try {
-        payload = await this.jwt.verifyAsync<JwtPayload>(header.slice(7));
+        const payload = await this.jwt.verifyAsync<JwtPayload>(header.slice(7));
+        const u = await this.users.findOne({ where: { id: payload.sub } });
+        if (!u || u.status !== 'active') tokenError = '账号不可用';
+        else req.user = { id: u.id, isSuperAdmin: u.isSuperAdmin, phone: u.phone } satisfies AuthUser;
       } catch {
-        throw new UnauthorizedException('登录已过期，请重新登录');
+        tokenError = '登录已过期，请重新登录';
       }
-      const u = await this.users.findOne({ where: { id: payload.sub } });
-      if (!u || u.status !== 'active') throw new UnauthorizedException('账号不可用');
-      req.user = { id: u.id, isSuperAdmin: u.isSuperAdmin, phone: u.phone } satisfies AuthUser;
     }
     const targets = [ctx.getHandler(), ctx.getClass()];
     const superOnly = this.reflector.getAllAndOverride<boolean>(SUPER_ONLY, targets);
     const loginRequired = superOnly || this.reflector.getAllAndOverride<boolean>(LOGIN_REQUIRED, targets);
-    if (loginRequired && !req.user) throw new UnauthorizedException('请先登录');
+    // 令牌无效时：需要登录的接口返回 401；公开接口按访客处理（不阻断登录、浏览公开族谱）
+    if (loginRequired && !req.user) throw new UnauthorizedException(tokenError ?? '请先登录');
     if (superOnly && !req.user.isSuperAdmin) throw new ForbiddenException('仅平台超级管理员可操作');
     return true;
   }

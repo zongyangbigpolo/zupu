@@ -1,0 +1,28 @@
+{
+  "name": "@zupu/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "族谱系统 Web 端（Vue 3 + Element Plus + AntV G6）",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@antv/g6": "^5.0.50",
+    "@element-plus/icons-vue": "^2.3.1",
+    "@zupu/shared": "0.1.0",
+    "axios": "^1.9.0",
+    "element-plus": "^2.10.0",
+    "pinia": "^3.0.2",
+    "vue": "^3.5.16",
+    "vue-router": "^4.5.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.4",
+    "typescript": "^5.9.3",
+    "vite": "^6.3.5",
+    "vue-tsc": "^2.2.10"
+  }
+}

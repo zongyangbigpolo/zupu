@@ -92,6 +92,8 @@ export interface ClanAdminInfo {
   phone: string | null;
   displayName: string | null;
   hasPassword: boolean;
+  /** 仅在任命时返回一次：对方尚未注册时用于激活账号 */
+  activationCode?: string | null;
 }
 
 export interface Membership {
@@ -104,6 +106,8 @@ export interface Membership {
   displayName?: string | null;
   linkedPersonName?: string | null;
   createdAt: string;
+  /** 仅在添加族人时返回一次：对方尚未注册时用于激活账号 */
+  activationCode?: string | null;
 }
 
 export interface Person {

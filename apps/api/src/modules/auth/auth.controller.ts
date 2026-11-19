@@ -15,6 +15,7 @@ class RegisterDto {
   @IsString() phone: string;
   @IsString() @MinLength(6) password: string;
   @IsOptional() @IsString() @MaxLength(60) displayName?: string;
+  @IsOptional() @IsString() @MaxLength(10) activationCode?: string;
 }
 
 @Controller('auth')
@@ -31,7 +32,7 @@ export class AuthController {
 
   @Post('register')
   register(@Body() dto: RegisterDto) {
-    return this.auth.register(dto.phone.trim(), dto.password, dto.displayName);
+    return this.auth.register(dto.phone.trim(), dto.password, dto.displayName, dto.activationCode);
   }
 
   @Get('me')

@@ -31,6 +31,9 @@ export class UserEntity {
   @Column({ type: 'varchar', nullable: true }) wechatOpenid: string | null;
   @Column({ type: 'varchar', nullable: true }) wechatUnionid: string | null;
   @Column({ type: 'boolean', default: false }) isSuperAdmin: boolean;
+  /** 预建账号激活码（哈希）与有效期 */
+  @Column({ type: 'varchar', nullable: true }) activationCodeHash: string | null;
+  @Column({ type: 'timestamptz', nullable: true }) activationExpiresAt: Date | null;
   @Column({ type: 'varchar', default: 'active' }) status: 'active' | 'disabled';
   @CreateDateColumn({ type: 'timestamptz' }) createdAt: Date;
   @UpdateDateColumn({ type: 'timestamptz' }) updatedAt: Date;

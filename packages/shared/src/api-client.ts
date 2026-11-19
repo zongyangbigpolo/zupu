@@ -66,8 +66,8 @@ export function createApiClient(t: ApiTransport) {
   return {
     auth: {
       login: (account: string, password: string) => post<AuthResult>('/auth/login', { account, password }),
-      register: (phone: string, password: string, displayName?: string) =>
-        post<AuthResult>('/auth/register', { phone, password, displayName }),
+      register: (phone: string, password: string, displayName?: string, activationCode?: string) =>
+        post<AuthResult>('/auth/register', { phone, password, displayName, activationCode }),
       me: () => get<UserInfo>('/auth/me'),
     },
     clans: {
@@ -134,7 +134,7 @@ export function createApiClient(t: ApiTransport) {
     },
     superAdmin: {
       clans: () => get<(Clan & { admins: ClanAdminInfo[]; personCount: number })[]>('/admin/clans'),
-      createClan: (data: ClanCreateInput) => post<Clan>('/admin/clans', data),
+      createClan: (data: ClanCreateInput) => post<Clan & { adminActivationCode: string | null }>('/admin/clans', data),
       updateClan: (id: string, data: Partial<ClanCreateInput> & { status?: Clan['status'] }) =>
         patch<Clan>(`/admin/clans/${id}`, data),
       admins: (id: string) => get<ClanAdminInfo[]>(`/admin/clans/${id}/admins`),

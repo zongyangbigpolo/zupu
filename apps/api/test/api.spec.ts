@@ -78,7 +78,14 @@ describe('族谱 API（e2e，基于种子数据）', () => {
         .set(auth('superAdmin'))
         .send({ name: '测试陈氏', surname: '陈', adminPhone: '13700000001' })
         .expect(201);
-      const reg = await request(http).post('/api/auth/register').send({ phone: '13700000001', password: 'pass123' }).expect(201);
+      expect(c.body.adminActivationCode).toMatch(/^\d{6}$/);
+      // 没有激活码不能抢注已被任命的手机号
+      await request(http).post('/api/auth/register').send({ phone: '13700000001', password: 'pass123' }).expect(403);
+      await request(http).post('/api/auth/register').send({ phone: '13700000001', password: 'pass123', activationCode: '000000' === c.body.adminActivationCode ? '111111' : '000000' }).expect(403);
+      const reg = await request(http)
+        .post('/api/auth/register')
+        .send({ phone: '13700000001', password: 'pass123', activationCode: c.body.adminActivationCode })
+        .expect(201);
       const t1 = { Authorization: `Bearer ${reg.body.token}` };
       await request(http).patch(`/api/clans/${c.body.id}`).set(t1).send({ hallName: '颍川堂' }).expect(200);
       await request(http).get(`/api/clans/${ids.liClanId}/members`).set(t1).expect(403);
