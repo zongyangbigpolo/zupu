@@ -7,6 +7,7 @@
       <router-link v-if="auth.isSuper" to="/super/links" class="nav">连谱审批</router-link>
       <div class="grow" />
       <template v-if="auth.user">
+        <NotificationBell />
         <el-tag v-if="auth.isSuper" type="danger" effect="dark" size="small">超级管理员</el-tag>
         <span class="user">{{ auth.user.displayName || auth.user.phone }}</span>
         <el-button text style="color: #f3e3c3" @click="logout">退出</el-button>
@@ -22,6 +23,7 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
 import { useAuth } from './stores/auth';
+import NotificationBell from './components/NotificationBell.vue';
 
 const route = useRoute();
 const router = useRouter();

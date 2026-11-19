@@ -14,6 +14,11 @@
         <el-button v-if="clan.myRole !== 'visitor'" :icon="'Link'" @click="router.push(`/clans/${clan.id}/links`)">跨族连谱</el-button>
         <el-button v-if="isAdmin" :icon="'Files'" @click="router.push(`/clans/${clan.id}/gedcom`)">导入导出</el-button>
         <el-button v-if="isAdmin" type="warning" :icon="'Setting'" @click="router.push(`/clans/${clan.id}/admin`)">家族管理</el-button>
+        <template v-if="clan.myRole !== 'visitor'">
+          <el-button :icon="'Notebook'" @click="router.push(`/clans/${clan.id}/contacts`)">通讯录</el-button>
+          <el-button :icon="'Flag'" @click="router.push(`/clans/${clan.id}/activities`)">活动公告</el-button>
+          <el-button :icon="'Calendar'" @click="router.push(`/clans/${clan.id}/reminders`)">生日忌日</el-button>
+        </template>
       </div>
       <p v-if="clan.description" class="desc">{{ clan.description }}</p>
     </el-card>

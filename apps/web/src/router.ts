@@ -14,6 +14,12 @@ export const router = createRouter({
     { path: '/persons/:id', component: () => import('./views/PersonDetailView.vue'), meta: { title: '人物档案' } },
     { path: '/persons/:id/tree', component: () => import('./views/TreeView.vue'), meta: { title: '五代树' } },
     { path: '/persons/:id/edit', component: () => import('./views/PersonEditView.vue'), meta: { title: '编辑成员', login: true } },
+    // M4 互动
+    { path: '/clans/:clanId/contacts', component: () => import('./views/m4/ContactsView.vue'), meta: { title: '族人通讯录', login: true } },
+    { path: '/clans/:clanId/activities', component: () => import('./views/m4/ActivitiesView.vue'), meta: { title: '活动与公告', login: true } },
+    { path: '/activities/:id', component: () => import('./views/m4/ActivityDetailView.vue'), meta: { title: '活动详情', login: true } },
+    { path: '/clans/:clanId/reminders', component: () => import('./views/m4/RemindersView.vue'), meta: { title: '生日忌日提醒', login: true } },
+    { path: '/notifications', component: () => import('./views/m4/NotificationsView.vue'), meta: { title: '我的通知', login: true } },
     { path: '/super', component: () => import('./views/SuperAdminView.vue'), meta: { title: '平台管理', login: true, super: true } },
     // M5 扩展
     { path: '/clans/:clanId/links', component: () => import('./views/m5/ClanLinksView.vue'), meta: { title: '跨族连谱', login: true } },
