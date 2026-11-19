@@ -20,6 +20,10 @@ export const router = createRouter({
     { path: '/activities/:id', component: () => import('./views/m4/ActivityDetailView.vue'), meta: { title: '活动详情', login: true } },
     { path: '/clans/:clanId/reminders', component: () => import('./views/m4/RemindersView.vue'), meta: { title: '生日忌日提醒', login: true } },
     { path: '/notifications', component: () => import('./views/m4/NotificationsView.vue'), meta: { title: '我的通知', login: true } },
+    { path: '/clans/:clanId/migrations', component: () => import('./visual/MigrationMapView.vue'), meta: { title: '迁徙地图' } },
+    { path: '/clans/:clanId/sites', component: () => import('./visual/SitesView.vue'), meta: { title: '祠堂祖坟' } },
+    { path: '/clans/:clanId/timeline', component: () => import('./visual/TimelineView.vue'), meta: { title: '家族时间轴' } },
+    { path: '/clans/:clanId/pedigree', component: () => import('./visual/PedigreeView.vue'), meta: { title: '吊线谱' } },
     { path: '/super', component: () => import('./views/SuperAdminView.vue'), meta: { title: '平台管理', login: true, super: true } },
     // M5 扩展
     { path: '/clans/:clanId/links', component: () => import('./views/m5/ClanLinksView.vue'), meta: { title: '跨族连谱', login: true } },

@@ -14,8 +14,9 @@ RUN npm run build -w @zupu/shared && npm run build -w @zupu/api && npm prune --o
 FROM node:22-alpine
 WORKDIR /app
 ENV NODE_ENV=production TZ=Asia/Shanghai
-# pg_dump 用于每日数据库备份（与 postgres:16 版本一致）
-RUN apk add --no-cache postgresql16-client
+# pg_dump 用于每日数据库备份（与 postgres:16 版本一致）；吊线谱 PDF 需要中文字体（Noto CJK）
+ARG APK_MIRROR=mirrors.aliyun.com
+RUN sed -i "s/dl-cdn.alpinelinux.org/$APK_MIRROR/g" /etc/apk/repositories && apk add --no-cache postgresql16-client font-noto-cjk
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/packages/shared/package.json ./packages/shared/package.json
 COPY --from=build /app/packages/shared/dist ./packages/shared/dist

@@ -51,6 +51,11 @@ services:
       WECHAT_TPL_REMINDER: ${WECHAT_TPL_REMINDER:-}
       WECHAT_TPL_ACTIVITY: ${WECHAT_TPL_ACTIVITY:-}
       REMINDER_HOUR: ${REMINDER_HOUR:-8}
+      # M3 地图服务（不填则使用离线地图）
+      MAP_PROVIDER: ${MAP_PROVIDER:-}
+      AMAP_KEY: ${AMAP_KEY:-}
+      AMAP_SECURITY_CODE: ${AMAP_SECURITY_CODE:-}
+      TMAP_KEY: ${TMAP_KEY:-}
     volumes:
       - uploads:/data/uploads
 

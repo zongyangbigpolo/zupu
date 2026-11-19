@@ -19,6 +19,7 @@ import type {
 import { HERITAGE_ENTITIES } from './heritage';
 
 export * from './heritage';
+import { VISUAL_ENTITIES } from './visual';
 
 // 注意：表结构以 src/database/migrations 为准，实体仅做映射（synchronize 关闭）。
 // 后续里程碑（M2–M5）新增表请新增迁移文件 + 新实体，不要修改已发布的迁移。
@@ -190,4 +191,7 @@ export const ENTITIES = [
   AuditLogEntity,
   ...HERITAGE_ENTITIES,
   ...INTERACTION_ENTITIES,
+  ...VISUAL_ENTITIES,
 ];
+
+export * from './visual';

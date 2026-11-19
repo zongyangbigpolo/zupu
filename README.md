@@ -21,6 +21,17 @@
 | 操作日志 | 管理员每次修改、超级管理员每次任免都留痕 |
 | AI（预留） | 纸质谱拍照识别导入、AI 生成小传：接口与入口已预留，显示"敬请期待" |
 
+## M3 可视化
+
+| 功能 | 说明 |
+|---|---|
+| 迁徙地图 | 迁徙记录（人物/支系、迁出地→迁入地、模糊日期、缘由）；按支系着色，按时间播放迁徙动画 |
+| 祠堂 · 祖坟 · 祖屋 | 地点档案（地址、坐标、照片、简介、关联人物），地图展示，一键高德/腾讯地图导航 |
+| 家族时间轴 | 家族大事、人物事迹、迁徙、生卒与朝代、历史大事对照；可按支系/人物筛选 |
+| 传统吊线谱 | 欧式（五世一表）/ 苏式吊线世系图，古籍竖排；导出可印刷 PDF 谱书（封面、谱序/凡例/家训、字辈） |
+
+地图使用高德或腾讯地图（`.env` 配置 `AMAP_KEY` / `TMAP_KEY`），未配置时自动使用内置离线中国地图。实现说明见 [docs/m3-implementation.md](docs/m3-implementation.md)。
+
 ## 技术栈
 
 - 后端：NestJS 11 + TypeORM + PostgreSQL 16（`WITH RECURSIVE` 递归查询）
@@ -106,4 +117,5 @@ npm test                     # 共享包单元测试 + API 端到端测试
 2. 生产环境务必修改 `.env` 中的 `DB_PASSWORD`、`JWT_SECRET`。
 3. 媒体建议使用对象存储：`.env` 中设 `STORAGE_DRIVER=s3` 并填写 COS/OSS 的 `S3_ENDPOINT`、`S3_REGION`、`S3_BUCKET`、密钥；`S3_PUBLIC_ENDPOINT` 填写 CDN 域名可让浏览器直连签名地址，留空则经 API 代理。
 4. 数据库备份：`docker compose exec db pg_dump -U zupu zupu > backup.sql`（建议配置每日定时任务）。
-5. 首个超级管理员：示例数据自带；不导入示例数据时，可在数据库中把某个已注册用户的 `app_user.is_super_admin` 置为 `true`。
+5. 地图：在高德开放平台或腾讯位置服务申请 Web 端 key（需绑定已备案域名），填入 `.env` 的 `AMAP_KEY`+`AMAP_SECURITY_CODE` 或 `TMAP_KEY`。
+6. 首个超级管理员：示例数据自带；不导入示例数据时，可在数据库中把某个已注册用户的 `app_user.is_super_admin` 置为 `true`。

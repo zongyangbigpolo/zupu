@@ -5,3 +5,7 @@ export * from './api-client.js';
 export * from './m5.js';
 export * from './heritage.js';
 export * from './interaction.js';
+export * from './visual.js';
+export * from './history-data.js';
+export * from './gazetteer.js';
+export * from './pedigree-layout.js';

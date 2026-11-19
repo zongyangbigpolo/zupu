@@ -21,6 +21,7 @@
         </template>
       </div>
       <p v-if="clan.description" class="desc">{{ clan.description }}</p>
+      <VisualNav :clan-id="clan.id" style="margin-top: 12px" />
     </el-card>
 
     <el-row :gutter="16">
@@ -130,6 +131,7 @@ import {
   type PersonSearchItem,
 } from '@zupu/shared';
 import { api, run } from '../api';
+import VisualNav from '../visual/VisualNav.vue';
 import { useAuth } from '../stores/auth';
 import ClanHeritageNav from '../heritage/components/ClanHeritageNav.vue';
 

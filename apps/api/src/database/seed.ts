@@ -13,6 +13,7 @@ import {
 import { AppDataSource } from './data-source';
 import { seedHeritage } from './seed-heritage';
 import { seedInteraction } from './seed-interaction';
+import { seedVisualization } from './seed-visual';
 import { generateLiClan, generateWangClan, LI_POEM, reignText, type SeedEvent, type SeedMarriage, type SeedParent, type SeedPerson } from './seed-data';
 
 export const DEMO_ACCOUNTS = {
@@ -166,6 +167,7 @@ export async function seed(ds: DataSource, opts: { reset?: boolean } = {}) {
       { clanId: wang.id, userId: superAdmin.id, entity: 'membership', entityId: null, action: 'appoint-admin', after: { phone: wangAdmin.phone } as any },
     ]);
     await seedHeritage(em, { clanId: li.id, founderId: li.founderId!, adminUserId: liAdmin.id, memberUserId: liMember.id });
+    await seedVisualization(em, { clanId: li.id, ids: liIds, ...liData }, { clanId: wang.id, ids: wangIds, ...wangData });
     const key = (k?: { key: string }) => (k ? liIds.get(k.key) : undefined);
     const result = {
       liClanId: li.id,
